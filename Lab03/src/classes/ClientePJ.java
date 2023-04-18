@@ -7,9 +7,8 @@ public class ClientePJ extends Cliente {
 	final private String cnpj;
 	private Date dataFundacao;
 
-	public ClientePJ(String nome, String endereco, Date dataLicenca, String educacao, String genero,
-			String classeEconomica, ArrayList<Veiculo> listaVeiculos, String cnpj, Date dataFundacao) {
-		super(nome, endereco, dataLicenca, educacao, genero, classeEconomica, listaVeiculos);
+	public ClientePJ(String nome, String endereco, ArrayList<Veiculo> listaVeiculos, String cnpj, Date dataFundacao) {
+		super(nome, endereco, listaVeiculos);
 		this.cnpj = cnpj;
 		this.dataFundacao = dataFundacao;
 	}
@@ -22,8 +21,12 @@ public class ClientePJ extends Cliente {
 		this.dataFundacao = dataFundacao;
 	}
 
-	public String getCnpj() {
+	public String getId() {
 		return cnpj;
+	}
+	
+	public String getTipo() {
+		return "PJ";
 	}
 	
 	private boolean has_valid_dv (String cpf) {
@@ -53,7 +56,7 @@ public class ClientePJ extends Cliente {
 		return true;
 	}
 	
-	public boolean validarCNPJ(String cnpj) {
+	public boolean validarId(String cnpj) {
 		int n_digitos;
 		cnpj.replaceAll("[^0-9]","");
 		
@@ -65,5 +68,16 @@ public class ClientePJ extends Cliente {
 			return false;
 		
 		return has_valid_dv(cnpj);
+	}
+	
+	public String toString() {
+		return ("Nome: " + getNome() + "\n" +
+				"Cnpj: " + getId() + "\n" +
+				"Data da Fundação : " + getDataFundacao() + "\n" +
+				"Endereco: " + getEndereco() + "\n" +
+				"Veículos:\n" +
+					stringListaVeiculos()
+				);
+		
 	}
 }

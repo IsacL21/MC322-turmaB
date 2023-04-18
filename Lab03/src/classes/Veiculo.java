@@ -44,4 +44,8 @@ public class Veiculo {
 	public void setAnoFabricacao(int anoFabricacao) {
 		this.anoFabricacao = anoFabricacao;
 	}
+	
+	public String toString() {
+		return (getMarca() + " " + getModelo() + " " + getAnoFabricacao() + " (" + getPlaca() +")\n");
+	}
 }

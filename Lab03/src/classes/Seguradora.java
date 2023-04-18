@@ -70,6 +70,47 @@ public class Seguradora {
 	}
 	
 	public boolean cadastrarCliente(Cliente novoCliente) {
-		
+		return listaClientes.add(novoCliente);
 	}
+	
+	public boolean removerCliente(String clienteId) {
+		return listaClientes.removeIf(n -> n.getId().equals(clienteId)); 
+	}
+	
+	public void listarClientes(String tipoCliente) {
+		System.out.println("Lista Clientes " + tipoCliente +":\n");
+		for (Cliente i:getListaClientes()) {
+			if (!(tipoCliente.equals("")) && (tipoCliente.equals(i.getTipo()))) 
+				System.out.println(
+						"\tNome: " + getNome() + "\n" +
+						(i.getTipo() == "PF"? "\tCpf: ": "\tCnpj: ") + i.getId() + "\n" +
+						"\tEndereco: " + getEndereco() + "\n" +
+						"\tVeículos:\n" +
+							i.stringListaVeiculos().indent(4)
+						);
+		}
+	}
+	
+	public boolean gerarSinistro(String data, String endereco, Veiculo veiculo, Cliente cliente) {
+		return getListaSinistros().add(new Sinistro(data,endereco,this,veiculo,cliente));
+	}
+	
+	public boolean visualizarSinistro(String clienteId) {
+		boolean found = false;
+		for (Sinistro i:getListaSinistros()) {
+			if (i.getCliente().getId().equals(clienteId)) {
+				System.out.println(i + 
+						"\n");
+				found = true;
+			}
+		}
+		return found;
+	}
+	
+	public void listarSinistros() {
+		for (Sinistro i:getListaSinistros()) {
+				System.out.println(i + 
+						"\n");	
+		}
+	}	
 }

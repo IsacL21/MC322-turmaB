@@ -1,14 +1,78 @@
 package classes;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Scanner;
+
 public class Main {
 
 	public static void main(String[] args) {
-		Cliente cliente_teste = new Cliente("Ronaldo", "500.208.968-24", "20/04/2004", "Av. Santa Isabel, 1125", 18);
-		Seguradora seguradora_teste = new Seguradora ("Segfacil", "(15 4004-5274)","segfacil@gmail.com", "Av Getúlio Vargas, 2900");
-		Veiculo veiculo_teste = new Veiculo("Fiat","Siena 1.4","FEV-9460");
-		Sinistro sinistro_teste = new Sinistro("21/03/2023","Av Getúlio Vargas, 2905");
-		System.out.println(cliente_teste);
-		System.out.println(cliente_teste.validarCPF());
+		Seguradora seguradora_teste = new Seguradora ("Safezinha", "(15) 4004-5274","safezinha@gmail.com",
+					"Av Getúlio Vargas, 2900", new ArrayList<Sinistro>(), new LinkedList<Cliente>());
+		System.out.println("menu:");
+		Scanner input = new Scanner(System.in);
+		String comando = input.nextLine().toLowerCase();
+		switch (comando) {
+	
+		
+		case "cadastrar cliente":
+			String tipo, nome, id, endereco;
+			boolean isValidDate;
+			
+			do {
+				System.out.println("Tipo do Cliente(PF ou PJ): ");
+				tipo = input.nextLine().toUpperCase();
+			} while (!tipo.equals("PF") && !tipo.equals("PJ"));
+			
+			System.out.println("Nome do Cliente: ");
+			nome = input.nextLine();
+			
+			System.out.println("Endereço: ");
+			endereco = input.nextLine();
+			
+			if (tipo.equals("PF")) {
+				String genero, stringDataLicenca, educacao, stringDataNascimento, classeEconomica;
+				Date dataNascimento, dataLicenca = null;
+				
+				System.out.println("Gênero: ");
+				genero = input.nextLine();
+				
+				System.out.println("Educação: ");
+				educacao = input.nextLine();
+				
+				System.out.println("Classe Econômica: ");
+				classeEconomica = input.nextLine();
+				
+				System.out.println("Data de Nascimento: ");
+				do {
+					stringDataNascimento = input.nextLine();
+					try {
+						dataNascimento = new SimpleDateFormat("dd/MM/yyyy").parse(stringDataNascimento);
+						isValidDate = true;
+					} catch (ParseException e) {
+						isValidDate = false;
+						System.out.println("Insira uma data no formato válido (dd/mm/yyyy)!");
+					}
+				}while (!isValidDate);
+				
+				System.out.println("Data de Licença: ");
+				do {
+					stringDataLicenca = input.nextLine();
+					try {
+						dataLicenca = new SimpleDateFormat("dd/MM/yyyy").parse(stringDataLicenca);
+						isValidDate = true;
+					} catch (ParseException e) {
+						isValidDate = false;
+						System.out.println("Insira uma data no formato válido (dd/mm/yyyy)!");
+					}
+				}while (!isValidDate);
+				
+				seguradora_teste.cadastrarCliente(new ClientePF(nome, endereco, dataLicenca, educacao, genero, classeEconomica, new ArrayList<Veiculo>(), id, dataNascimento));
+			} 
+		}
 	}
 
 }

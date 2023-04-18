@@ -1,5 +1,6 @@
 package classes;
 
+
 public class Sinistro {
 	private static int ultima_ID = 0;
 	final private int ID;
@@ -9,7 +10,7 @@ public class Sinistro {
 	private Veiculo veiculo;
 	private Cliente cliente;
 
-	public Sinistro( String data, String endereco, Seguradora seguradora, Veiculo veiculo, Cliente cliente) {
+	public Sinistro(String data, String endereco, Seguradora seguradora, Veiculo veiculo, Cliente cliente) {
 		this.ID = geraID();
 		this.data = data;
 		this.endereco = endereco;
@@ -67,4 +68,14 @@ public class Sinistro {
 		return ultima_ID;
 	}
 	
+	public String toString() {
+		return ("Id: " + getID() + "\n" +
+				"Endereço: " + getEndereco() + "\n" +
+				"Data: " + getData() + "\n" +
+				"Endereco: " + getEndereco() + "\n" +
+				"Cliente: " + getCliente().getNome() + " (" + getCliente().getId() + ")\n" +
+				"Veículo: " + getVeiculo() + "\n" +
+				"Seguradora: " + getSeguradora().getNome() + "\n"
+				);
+	}
 }
