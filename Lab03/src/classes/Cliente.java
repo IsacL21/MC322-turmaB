@@ -56,9 +56,10 @@ public abstract class Cliente {
 	
 	public abstract String getTipo();
 	
-	public abstract boolean validarId(String Id);
+
+	public abstract boolean validarId();
 	
-	protected boolean is_equal_characters(String str) {
+	protected static boolean is_equal_characters(String str) {
 		for (int i = 1; i < str.length(); i++) {
 			if (str.charAt(0) != str.charAt(i))
 				return false;

@@ -10,69 +10,60 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
-		Seguradora seguradora_teste = new Seguradora ("Safezinha", "(15) 4004-5274","safezinha@gmail.com",
+		Seguradora seguradoraTeste = new Seguradora ("Safezinha", "(15) 4004-5274","safezinha@gmail.com",
 					"Av Getúlio Vargas, 2900", new ArrayList<Sinistro>(), new LinkedList<Cliente>());
-		System.out.println("menu:");
-		Scanner input = new Scanner(System.in);
-		String comando = input.nextLine().toLowerCase();
-		switch (comando) {
-	
+		ClientePF c1, c2;
+		ClientePJ c3;
+		Date dataNascimento = null, dataLicenca = null, dataFundacao = null;
 		
-		case "cadastrar cliente":
-			String tipo, nome, id, endereco;
-			boolean isValidDate;
-			
-			do {
-				System.out.println("Tipo do Cliente(PF ou PJ): ");
-				tipo = input.nextLine().toUpperCase();
-			} while (!tipo.equals("PF") && !tipo.equals("PJ"));
-			
-			System.out.println("Nome do Cliente: ");
-			nome = input.nextLine();
-			
-			System.out.println("Endereço: ");
-			endereco = input.nextLine();
-			
-			if (tipo.equals("PF")) {
-				String genero, stringDataLicenca, educacao, stringDataNascimento, classeEconomica;
-				Date dataNascimento, dataLicenca = null;
-				
-				System.out.println("Gênero: ");
-				genero = input.nextLine();
-				
-				System.out.println("Educação: ");
-				educacao = input.nextLine();
-				
-				System.out.println("Classe Econômica: ");
-				classeEconomica = input.nextLine();
-				
-				System.out.println("Data de Nascimento: ");
-				do {
-					stringDataNascimento = input.nextLine();
-					try {
-						dataNascimento = new SimpleDateFormat("dd/MM/yyyy").parse(stringDataNascimento);
-						isValidDate = true;
-					} catch (ParseException e) {
-						isValidDate = false;
-						System.out.println("Insira uma data no formato válido (dd/mm/yyyy)!");
-					}
-				}while (!isValidDate);
-				
-				System.out.println("Data de Licença: ");
-				do {
-					stringDataLicenca = input.nextLine();
-					try {
-						dataLicenca = new SimpleDateFormat("dd/MM/yyyy").parse(stringDataLicenca);
-						isValidDate = true;
-					} catch (ParseException e) {
-						isValidDate = false;
-						System.out.println("Insira uma data no formato válido (dd/mm/yyyy)!");
-					}
-				}while (!isValidDate);
-				
-				seguradora_teste.cadastrarCliente(new ClientePF(nome, endereco, dataLicenca, educacao, genero, classeEconomica, new ArrayList<Veiculo>(), id, dataNascimento));
-			} 
+		try {
+			dataLicenca = new SimpleDateFormat("dd/MM/yyyy").parse("20/10/1996");
+			dataNascimento = new SimpleDateFormat("dd/MM/yyyy").parse("24/01/1979");
+		}catch (ParseException e) {}
+		c1 = new ClientePF("Dean Winchester", "Cross Junction, Virginia, 22625", dataLicenca,
+				"Ensino Médio", "Masculino", "Baixa", new ArrayList<Veiculo>(), "126.816.874-21", dataNascimento);
+		
+		try {
+			dataLicenca = new SimpleDateFormat("dd/MM/yyyy").parse("13/02/1968");
+			dataNascimento = new SimpleDateFormat("dd/MM/yyyy").parse("24/01/1979");
+		}catch (ParseException e) {}
+		c2 = new ClientePF("Homer Simpson", "Evergreen Terrace, Springfield, 742", dataLicenca,
+				"Ensino Fundamental", "Masculino","Média", new ArrayList<Veiculo>(), "598.537.490-41", dataNascimento);
+		
+		try {
+			dataFundacao = new SimpleDateFormat("dd/MM/yyyy").parse("28/07/2008");
+		}catch (ParseException e) {}
+		c3 = new ClientePJ("Carrara Taxis Carrara", "Praça Mozar Firmeza, Rio de Janeiro, 761", new ArrayList<Veiculo>(), "15.656.646/0001-07", dataFundacao);
+		System.out.println("Cliente 1 é " + (c1.validarId() ? "válido\n" : "inválido\n") +
+				"Cliente 2 é " + (c2.validarId() ? "válido\n" : "inválido\n") +
+				"Cliente 3 é " + (c3.validarId() ? "válido\n" : "inválido\n"));
+		
+		c1.cadastrarVeiculo(new Veiculo("Chevrolet", "Impala", "KAZ2Y5", 1967));
+		c2.cadastrarVeiculo(new Veiculo("Plymouth", "Junkerolla", "TR80R", 1986));
+		c3.cadastrarVeiculo(new Veiculo("Volkswagen", "Santana", "JOP-2260", 2000));
+		c3.cadastrarVeiculo(new Veiculo("Volkswagen", "Santana", "MBR-5862", 1998));
+		
+		seguradoraTeste.cadastrarCliente(c1);
+		seguradoraTeste.cadastrarCliente(c2);
+		seguradoraTeste.cadastrarCliente(c3);
+		
+		int j = 0;
+		for (Cliente i:seguradoraTeste.getListaClientes()) {
+			if (!i.validarId()) {
+				seguradoraTeste.removerCliente(i.getId());
+				j++;
+			}
+		}
+		if (j != 0)
+			System.out.println("Número de clientes com id inválido removido: " + j + "\n");
+		
+		
+		
+		
+		
+		
+		
+			 
 		}
 	}
 
-}

@@ -34,31 +34,31 @@ public class ClientePJ extends Cliente {
 		
 		//verifica primeiro dv
 		sum = 0;
-		weight = 3;
+		weight = 11;
 		for (i = 0; i < 12; i++) {
 			sum += ((weight % 8) + 2) * (Integer.parseInt(String.valueOf(cpf.charAt(i))));
 			weight--;
 		}
-		dv = (sum % 11) > 2 ? (11 - (sum % 11)) : 2;
+		dv = (sum % 11) > 2 ? (11 - (sum % 11)) : 0;
 		if ((Integer.parseInt(String.valueOf(cpf.charAt(12)))) != dv)
 				return false;
 		
 		//verifica segundo dv
 		sum = 0;
-		weight = 4;
+		weight = 12;
 		for (i = 0; i < 13; i++) {
 			sum += ((weight % 8) + 2) * (Integer.parseInt(String.valueOf(cpf.charAt(i))));
 			weight--;
 		}
-		dv = (sum % 11) > 2 ? (11 - (sum % 11)) : 2;
-		if ((Integer.parseInt(String.valueOf(cpf.charAt(12)))) != dv)
+		dv = (sum % 11) > 2 ? (11 - (sum % 11)) : 0;
+		if ((Integer.parseInt(String.valueOf(cpf.charAt(13)))) != dv)
 			return false;
 		return true;
 	}
 	
-	public boolean validarId(String cnpj) {
+	public boolean validarId() {
 		int n_digitos;
-		cnpj.replaceAll("[^0-9]","");
+		String cnpj = this.cnpj.replaceAll("[^0-9]","");
 		
 		n_digitos = cnpj.length();
 		if (n_digitos != 14)

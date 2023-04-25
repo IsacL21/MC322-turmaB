@@ -74,7 +74,7 @@ public class Seguradora {
 	}
 	
 	public boolean removerCliente(String clienteId) {
-		return listaClientes.removeIf(n -> n.getId().equals(clienteId)); 
+		return listaClientes.removeIf(n -> n.getId().replaceAll("[^0-9]","").equals(clienteId.replaceAll("[^0-9]",""))); 
 	}
 	
 	public void listarClientes(String tipoCliente) {
@@ -98,7 +98,7 @@ public class Seguradora {
 	public boolean visualizarSinistro(String clienteId) {
 		boolean found = false;
 		for (Sinistro i:getListaSinistros()) {
-			if (i.getCliente().getId().equals(clienteId)) {
+			if (i.getCliente().getId().replaceAll("[^0-9]","").equals(clienteId.replaceAll("[^0-9]",""))) {
 				System.out.println(i + 
 						"\n");
 				found = true;

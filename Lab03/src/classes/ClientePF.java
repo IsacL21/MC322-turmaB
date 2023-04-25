@@ -100,9 +100,9 @@ public class ClientePF extends Cliente {
 		return true;
 	}
 	
-	public boolean validarId(String cpf) {
+	public boolean validarId() {
 		int n_digitos;
-		cpf.replaceAll("[^0-9]","");
+		String cpf = this.cpf.replaceAll("[^0-9]","");
 		
 		n_digitos = cpf.length();
 		if (n_digitos != 11)
