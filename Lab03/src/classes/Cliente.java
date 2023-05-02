@@ -44,7 +44,7 @@ public abstract class Cliente {
 	public String stringListaVeiculos() {
 		String lista = "";
 		for(Veiculo i:getListaVeiculos())
-			lista += ("\t" + i.toString() + "\n");
+			lista += ("\t" + i.toString());
 		return lista;
 	}
 	

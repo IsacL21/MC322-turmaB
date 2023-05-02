@@ -80,11 +80,11 @@ public class Seguradora {
 	public void listarClientes(String tipoCliente) {
 		System.out.println("Lista Clientes " + tipoCliente +":\n");
 		for (Cliente i:getListaClientes()) {
-			if (!(tipoCliente.equals("")) && (tipoCliente.equals(i.getTipo()))) 
+			if ((tipoCliente.equals("")) || (tipoCliente.equals(i.getTipo()))) 
 				System.out.println(
-						"\tNome: " + getNome() + "\n" +
+						"\tNome: " + i.getNome() + "\n" +
 						(i.getTipo() == "PF"? "\tCpf: ": "\tCnpj: ") + i.getId() + "\n" +
-						"\tEndereco: " + getEndereco() + "\n" +
+						"\tEndereco: " + i.getEndereco() + "\n" +
 						"\tVeículos:\n" +
 							i.stringListaVeiculos().indent(4)
 						);
@@ -97,6 +97,7 @@ public class Seguradora {
 	
 	public boolean visualizarSinistro(String clienteId) {
 		boolean found = false;
+		System.out.println("Sinistros:\n");
 		for (Sinistro i:getListaSinistros()) {
 			if (i.getCliente().getId().replaceAll("[^0-9]","").equals(clienteId.replaceAll("[^0-9]",""))) {
 				System.out.println(i + 
@@ -108,6 +109,7 @@ public class Seguradora {
 	}
 	
 	public void listarSinistros() {
+		System.out.println("Sinistros:\n");
 		for (Sinistro i:getListaSinistros()) {
 				System.out.println(i + 
 						"\n");	

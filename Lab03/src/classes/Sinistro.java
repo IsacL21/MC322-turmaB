@@ -74,7 +74,7 @@ public class Sinistro {
 				"Data: " + getData() + "\n" +
 				"Endereco: " + getEndereco() + "\n" +
 				"Cliente: " + getCliente().getNome() + " (" + getCliente().getId() + ")\n" +
-				"Veículo: " + getVeiculo() + "\n" +
+				"Veículo: " + getVeiculo() +
 				"Seguradora: " + getSeguradora().getNome() + "\n"
 				);
 	}
