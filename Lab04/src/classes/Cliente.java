@@ -42,6 +42,10 @@ public abstract class Cliente {
 	public boolean removerVeiculo(String placaVeiculo) {
 		return listaVeiculos.removeIf(n -> n.getPlaca().equals(placaVeiculo)); 
 	}
+	
+	public boolean removerVeiculo(Veiculo veiculo) {
+		return listaVeiculos.removeIf(n -> n.equals(veiculo)); 
+	}
 
 	public String stringListaVeiculos() {
 		String lista = "";

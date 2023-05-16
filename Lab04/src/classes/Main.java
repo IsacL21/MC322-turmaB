@@ -8,16 +8,12 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
-	
+	//atributos
 	private static Scanner scanner = new Scanner(System.in);
 	private static ArrayList<Seguradora> listaSeguradoras = new ArrayList<Seguradora>();
 	
-	/*Printa mensagem, le uma string e a retorna*/
-	private static String printScan(String mensagem) {
-		System.out.println(mensagem);
-		return scanner.nextLine();
-	}
 	
+	//implementacao das opcoes
 	private static void opcaoGerarSinistro() {
 		String placa, dataSinistro, enderecoSinistro;
 		Veiculo veiculo = null;
@@ -81,6 +77,10 @@ public class Main {
 			System.out.println("Seguradora não encontrada");
 			return;
 		}
+		//TODO: atualizar preco automaticamente conforme a insercao de sinistros e veiculos
+		for (Cliente i: seguradora.getListaClientes()) {
+			seguradora.calcularPrecoSeguroCliente(i); 
+		}
 		System.out.println("Receita da Seguradora " + seguradora.getNome() + ":" + seguradora.calculaReceita());
 		return;
 	}
@@ -108,10 +108,10 @@ public class Main {
 			Date dataNascimento = null,dataLicenca = null;
 			//recebe nome
 			do {nome = printScan("Nome do Cliente: ");}
-			while (Validacao.validarNome(nome));
+			while (!Validacao.validarNome(nome));
 			//recebe cpf
 			do {clienteId = printScan("Cpf: ");}
-			while (Validacao.validarCPF(clienteId));
+			while (!Validacao.validarCPF(clienteId));
 			//receber data de nascimento
 			do {
 				strDataNascimento = printScan("Data de Nascimento(dd/mm/yyyy): ");
@@ -154,10 +154,10 @@ public class Main {
 			nome = printScan("Nome do Cliente: ");
 			//recebe cpf
 			do {clienteId = printScan("Cnpj: ");}
-			while (Validacao.validarCNPJ(clienteId));
+			while (!Validacao.validarCNPJ(clienteId));
 			//recebe data fundacao
 			do {
-				strDataFundacao = printScan("Data de Nascimento(dd/mm/yyyy): ");
+				strDataFundacao = printScan("Data de Fundação(dd/mm/yyyy): ");
 				try {
 					dataFundacao = new SimpleDateFormat("dd/MM/yyyy").parse(strDataFundacao);
 					isValidDate = true;
@@ -348,11 +348,64 @@ public class Main {
 		return;
 	}
 	
-	private static void opcaoExcluirVeiculo() {}
+	private static void opcaoExcluirVeiculo() {
+		String placa;
+		Veiculo veiculo = null;
+		Cliente cliente = null;
+		int i = -1;
+		//receber e procura cliente
+		placa = printScan("Placa do Veículo: ");
+		while (veiculo == null && i < listaSeguradoras.size()-1) {
+			i++;
+			veiculo = listaSeguradoras.get(i).encontraVeiculo(placa);
+		}
+		if (veiculo == null) {
+			System.out.println("Veículo não encontrado.");
+			return;
+		}
+		cliente = listaSeguradoras.get(i).encontraDono(veiculo);
+		if (cliente.removerVeiculo(veiculo))
+			System.out.println("Veículo removido com sucesso!");
+		else
+			System.out.println("Erro ao remover veículo.");
+		return;
+	}
 	
-	private static void opcaoExcluirSinistro() {}
-	
+	private static void opcaoExcluirSinistro() {
+		boolean isInt;
+		int idSinistro=-1,i=-1;
+		Sinistro sinistro = null;
+		do {
+			try {
+				idSinistro = Integer.parseInt(printScan("Id do Sinistro: "));
+				isInt = true;
+				}
+			catch (NumberFormatException e) { isInt = false; }
+		}while(!isInt);
+		while (sinistro == null && i < listaSeguradoras.size()-1) {
+			i++;
+			int j =-1;
+			while (sinistro == null && j < listaSeguradoras.get(i).getListaSinistros().size()-1) {
+				j++;
+				if ((listaSeguradoras.get(i).getListaSinistros().get(j).getID()) == idSinistro)
+					sinistro = listaSeguradoras.get(i).getListaSinistros().get(j);
+			}
+		}
+		if (listaSeguradoras.get(i).getListaSinistros().remove(sinistro))
+			System.out.println("Sinistro removido com sucesso!");
+		else
+			System.out.println("Erro ao remover SInistro.");
+		return;
 		
+	}
+	
+	
+	//metodos auxiliares
+	/*Printa mensagem, le uma string e a retorna*/
+	private static String printScan(String mensagem) {
+		System.out.println(mensagem);
+		return scanner.nextLine();
+	}
 	
 	private static Seguradora encontraSeguradora(String nome) {
 		for (Seguradora i:listaSeguradoras) {
@@ -362,6 +415,7 @@ public class Main {
 		return null;
 	}
 	
+	//metodos do menu
 	private static void exibirMenuExterno() {
 		MenuOperacoes menuOperacoes[] = MenuOperacoes.values();
 		System.out.println("Menu principal");
@@ -457,13 +511,13 @@ public class Main {
 			opcaoListarVeiculosCliente();
 			break;
 		case EXCLUIR_CLIENTE:
-			System.out.println("Chamar metodo excluir cliente");
+			opcaoExcluirCliente();
 			break;
 		case EXCLUIR_VEICULO:
-			System.out.println("Chamar metodo excluir veiculo");
+			opcaoExcluirVeiculo();
 			break;
 		case EXCLUIR_SINISTRO:
-			System.out.println("Chamar metodo excluir sinistro");
+			opcaoExcluirSinistro();
 			break;
 		//case VOLTAR:
 			//break;
@@ -481,7 +535,7 @@ public class Main {
 	
 	
 	
-	
+	//MAIN
 	public static void main(String[] args) {
 		//instanciando seguradora e clientes
 		Seguradora seguradoraTeste = new Seguradora ("Safezinha", "(15) 4004-5274","safezinha@gmail.com",
