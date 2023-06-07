@@ -51,6 +51,8 @@ public abstract class Seguro {
 	public void setSeguradora(Seguradora seguradora) {
 		this.seguradora = seguradora;
 	}
+	
+	public abstract String getTipo();
 
 	public ArrayList<Condutor> getListaCondutores() {
 		return listaCondutores;

@@ -57,9 +57,41 @@ public class Seguradora {
 	public ArrayList<Seguro> getListaSeguros() {
 		return listaSeguros;
 	}
+	
+	public ArrayList<SeguroPF> getListaSegurosPF() {
+		ArrayList<SeguroPF> returnList = new ArrayList<SeguroPF>();
+		for (Seguro i: listaSeguros)
+			if (i.getTipo().equals("PF"))
+				returnList.add((SeguroPF) i);
+		return returnList;
+	}
+	
+	public ArrayList<SeguroPJ> getListaSegurosPJ() {
+		ArrayList<SeguroPJ> returnList = new ArrayList<SeguroPJ>();
+		for (Seguro i: listaSeguros)
+			if (i.getTipo().equals("PJ"))
+				returnList.add((SeguroPJ) i);
+		return returnList;
+	}
 
 	public ArrayList<Cliente> getListaClientes() {
 		return listaClientes;
+	}
+	
+	public ArrayList<ClientePF> getListaClientesPF() {
+		ArrayList<ClientePF> returnList = new ArrayList<ClientePF>();
+		for (Cliente i: listaClientes)
+			if (i.getTipo().equals("PF"))
+				returnList.add((ClientePF) i);
+		return returnList;
+	}
+	
+	public ArrayList<ClientePJ> getListaClientesPJ() {
+		ArrayList<ClientePJ> returnList = new ArrayList<ClientePJ>();
+		for (Cliente i: listaClientes)
+			if (i.getTipo().equals("PJ"))
+				returnList.add((ClientePJ) i);
+		return returnList;
 	}
 
 	public String getCnpj() {
@@ -96,19 +128,11 @@ public class Seguradora {
 		return getListaClientes().remove(cliente);
 	}
 	
-	public ArrayList<SeguroPF> getSegurosPorCliente(ClientePF cliente){
-		ArrayList<SeguroPF> returnList = new ArrayList<SeguroPF>();
+	public ArrayList<Seguro> getSegurosPorCliente(Cliente cliente){
+		ArrayList<Seguro> returnList = new ArrayList<Seguro>();
 		for (Seguro i:listaSeguros) 
 			if (i.getCliente().equals(cliente))
-				returnList.add((SeguroPF) i);
-		return returnList;
-	}
-	
-	public ArrayList<SeguroPJ> getSegurosPorCliente(ClientePJ cliente){
-		ArrayList<SeguroPJ> returnList = new ArrayList<SeguroPJ>();
-		for (Seguro i:listaSeguros) 
-			if (i.getCliente().equals(cliente))
-				returnList.add((SeguroPJ) i);
+				returnList.add(i);
 		return returnList;
 	}
 	
@@ -127,22 +151,6 @@ public class Seguradora {
 			if (i.getSeguro().getSeguradora().equals(this))
 				returnList.add(i);
 		return returnList;
-	}
-	
-	private SeguroPJ getSeguro(Frota frota, ClientePJ cliente) {
-		for (SeguroPJ i : getSegurosPorCliente(cliente)) {
-			if (i.getFrota().equals(frota))
-				return i;
-		}
-		return null;
-	}
-	
-	private SeguroPF getSeguro(Veiculo veiculo, ClientePF cliente) {
-		for (SeguroPF i : getSegurosPorCliente(cliente)) {
-			if (i.getVeiculo().equals(veiculo))
-				return i;
-		}
-		return null;
 	}
 
 	public double calculaReceita() {

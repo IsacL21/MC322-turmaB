@@ -9,264 +9,140 @@ import java.util.Scanner;
 
 public class Main {
 	//atributos
-	private static Scanner scanner = new Scanner(System.in);
+	public static final Scanner scanner = new Scanner(System.in);
 	private static ArrayList<Seguradora> listaSeguradoras = new ArrayList<Seguradora>();
 	
 	
-	private static int escolheSeguradora(ArrayList<Seguradora> lista) {
-		int opUsuario = -1;
-		boolean isInt = false;
-		for (int i = 0; i < lista.size(); i++) {
-			System.out.println(i + "-" + lista.get(i).getNome());
-		}
-		do {
-			try {
-				opUsuario = Integer.parseInt(scanner.nextLine()) - 1;
-				isInt = true;
-				}
-			catch (NumberFormatException e) { isInt = false; System.out.println("insira uma opção válida!"); }
-		}while(!(isInt) && (opUsuario < 0 || opUsuario > lista.size()));
-		return opUsuario;
-	}
-	
-	private static int escolheCliente(ArrayList<Cliente> lista) {
-		int opUsuario = -1;
-		boolean isInt = false;
-		for (int i = 0; i < lista.size(); i++) {
-			System.out.println(i + "-" + lista.get(i).getNome() + "(" + lista.get(i).getId() + ")");
-		}
-		do {
-			try {
-				opUsuario = Integer.parseInt(scanner.nextLine()) - 1;
-				isInt = true;
-				}
-			catch (NumberFormatException e) { isInt = false; System.out.println("insira uma opção válida!"); }
-		}while(!(isInt) && (opUsuario < 0 || opUsuario > lista.size()));
-		return opUsuario;
-	}
-	
-	private static int escolheVeiculo(ArrayList<Veiculo> lista) {
-		int opUsuario = -1;
-		boolean isInt = false;
-		for (int i = 0; i < lista.size(); i++) {
-			System.out.println(i + "-" + lista.get(i));
-		}
-		do {
-			try {
-				opUsuario = Integer.parseInt(scanner.nextLine()) - 1;
-				isInt = true;
-				}
-			catch (NumberFormatException e) { isInt = false; System.out.println("insira uma opção válida!"); }
-		}while(!(isInt) && (opUsuario < 0 || opUsuario > lista.size()));
-		return opUsuario;
-	}
-	
-	private static int escolheFrota(ArrayList<Frota> lista) {
-		int opUsuario = -1;
-		boolean isInt = false;
-		for (int i = 0; i < lista.size(); i++) {
-			System.out.println(i + "-" + lista.get(i).getCode());
-		}
-		do {
-			try {
-				opUsuario = Integer.parseInt(scanner.nextLine()) - 1;
-				isInt = true;
-				}
-			catch (NumberFormatException e) { isInt = false; System.out.println("insira uma opção válida!"); }
-		}while(!(isInt) && (opUsuario < 0 || opUsuario > lista.size()));
-		return opUsuario;
-	}
-	
-	
-	
 	//implementacao das opcoes
-	private static void opcaoGerarSinistro() {
-		String placa, dataSinistro, enderecoSinistro;
-		Veiculo veiculo = null;
-		Seguradora seguradora;
-		int seguradoraIndex, clienteIndex;
-		
-		System.out.println("Selecione a seguradora:");
-		seguradoraIndex = escolheSeguradora(listaSeguradoras);
-			
-		
-		System.out.println("Selecione o cliente:");
-		seguradoraIndex = escolheCliente(listaSeguradoras.get(seguradoraIndex).getListaClientes());
-		
-		if (listaSeguradoras.get(seguradoraIndex).getListaClientes().get(clienteIndex).getTipo().equals("PF"))
-		int i = -1;
-		//recebe placa e procura veiculo nas seguradoras
-		placa = printScan("Placa do veículo: ");
-		while (veiculo == null && i < listaSeguradoras.size()-1) {
-			i++;
-			veiculo = listaSeguradoras.get(i).encontraVeiculo(placa);
-		}
-		if (veiculo == null) {
-			//retorna erro se nao encontrar
-			System.out.println("Veículo não encontrado.\n");
-			return;
-		}
-		//recebe as outras informacoes se encontrar
-		dataSinistro = printScan("Data:");
-		enderecoSinistro = printScan("Endereço: ");
-		if (listaSeguradoras.get(i).gerarSinistro(dataSinistro, enderecoSinistro, veiculo)) 
-			System.out.println("Sinistro cadastrado com sucesso!\n");
-		else
-			System.out.println("Erro ao cadastrar sinistro");
-		return;
-	}
 	
+	private static void opcaoGerarSinistro() {
+		String enderecoSinistro;
+		Date dataSinistro;	
+		Condutor condutor;
+		Seguro seguro;
+		
+		seguro = Selecao.escolheSeguro(Selecao.escolheSeguradora(listaSeguradoras).getListaSeguros());
+		condutor = Selecao.escolheCondutor(seguro.getListaCondutores());
+		
+		//receber data do sinistro
+		System.out.println("Data do Sinistro:");
+		dataSinistro = Input.recebeDataValida();
+		enderecoSinistro = Input.printScan("Endereço: ");
+		if (seguro.gerarSinistro(dataSinistro, enderecoSinistro, condutor))
+			System.out.println("Sinistro gerado com sucesso!");
+		else System.out.println("Erro ao gerar sinistro.");
+		}
+		
 	private static void opcaoCalcularReceita() {
-		int seguradoraIndex;
-		System.out.println("Selecione a seguradora:");
-		seguradoraIndex = escolheSeguradora(listaSeguradoras);
-		System.out.println("Receita da Seguradora " + listaSeguradoras.get(seguradoraIndex).getNome() + ":" 
-		+ listaSeguradoras.get(seguradoraIndex).calculaReceita());
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		System.out.println("Receita da Seguradora " + seguradora.getNome() + ":" 
+		+ seguradora.calculaReceita());
 		return;
 	}
 	
 	private static void opcaoCadastrarCliente() {
-		String nomeSeguradora,tipoCliente,clienteId,nome,telefone,endereco,email;
+		String tipoCliente;
 		Seguradora seguradora;
-		Cliente cliente;
-		boolean isValidDate;
-		int seguradoraIndex;
+		boolean returnBool = false;
 		
-		System.out.println("Selecione a seguradora:");
-		seguradoraIndex = escolheSeguradora(listaSeguradoras);
+		seguradora = Selecao.escolheSeguradora(listaSeguradoras);
 		
 		//recebe tipo do cliente
-		do {tipoCliente = printScan("Tipo do Cliente(PF ou PJ)");}
+		do {tipoCliente = Input.printScan("Tipo do Cliente(PF ou PJ)");}
 		while (!(tipoCliente.equals("PF") || tipoCliente.equals("PJ")));
 		
 		//cadastra cliente PF
-		if (tipoCliente.equals("PF")) {
-			String strDataNascimento,educacao,genero;
-			Date dataNascimento = null;
-			//recebe nome
-			do {nome = printScan("Nome do Cliente: ");}
-			while (!Validacao.validarNome(nome));
-			//recebe cpf
-			do {clienteId = printScan("Cpf: ");}
-			while (!Validacao.validarCPF(clienteId));
-			//receber data de nascimento
-			do {
-				strDataNascimento = printScan("Data de Nascimento(dd/mm/yyyy): ");
-				try {
-					dataNascimento = new SimpleDateFormat("dd/MM/yyyy").parse(strDataNascimento);
-					isValidDate = true;
-				} catch (ParseException e) { isValidDate = false; }
-			}while (!isValidDate);
-			telefone = printScan("Telefone ");
-			endereco = printScan("Endereço: ");
-			email = printScan("Email: ");
-			educacao = printScan("Educação: ");
-			genero = printScan("Gênero: ");
-			
-			//instancia o cliente
-			cliente = new ClientePF(nome, telefone, endereco, email, educacao, genero, clienteId, dataNascimento);
-			//cadastra cliente
-			if (listaSeguradoras.get(seguradoraIndex).cadastrarCliente(cliente))
-				System.out.println("Cliente cadastrado com sucesso!\n");
-			else
-				System.out.println("Erro ao cadastrar cliente\n");
-			return;
-			}
-		
-		//cadastra cliente PJ
-		if (tipoCliente.equals("PJ")) {
-			String strDataFundacao;
-			Date dataFundacao = null;
-			int qtdeFuncionarios = 0;
-			boolean isInt;
-			//recebe nome
-			nome = printScan("Nome do Cliente: ");
-			//recebe cpf
-			do {clienteId = printScan("Cnpj: ");}
-			while (!Validacao.validarCNPJ(clienteId));
-			//recebe data fundacao
-			do {
-				strDataFundacao = printScan("Data de Fundação(dd/mm/yyyy): ");
-				try {
-					dataFundacao = new SimpleDateFormat("dd/MM/yyyy").parse(strDataFundacao);
-					isValidDate = true;
-				} catch (ParseException e) { isValidDate = false; }
-			}while (!isValidDate);
-			//receber endereco e qtdeFuncionarios
-			do {
-				try {
-					qtdeFuncionarios = Integer.parseInt(printScan("Quantidade de Funcionarios: "));
-					isInt = true;
-					}
-				catch (NumberFormatException e) { isInt = false; }
-			}while(!isInt);
-			telefone = printScan("Telefone ");
-			endereco = printScan("Endereço: ");
-			email = printScan("Email: ");
-			//instancia o cliente
-			cliente = new ClientePJ(nome, telefone, endereco, email, clienteId, dataFundacao, qtdeFuncionarios);
-			//cadastra cliente
-			if (listaSeguradoras.get(seguradoraIndex).cadastrarCliente(cliente))
-				System.out.println("Cliente cadastrado com sucesso!\n");
-			else
-				System.out.println("Erro ao cadastrar cliente\n");
-			return;
-		}
-	}
-	
-	private static void opcaoCadastrarVeiculo() {
-		String idCliente, marca, modelo, placa;
-		Cliente cliente = null;
-		Veiculo veiculo;
-		boolean isInt;
-		int i = -1, anoFabricacao = -1;
-		//receber e procura cliente
-		idCliente = printScan("Id do Dono do veículo: ");
-		while (cliente == null && i < listaSeguradoras.size()-1) {
-			i++;
-			cliente = listaSeguradoras.get(i).encontraCliente(idCliente);
-		}
-		if (cliente == null) {
-			System.out.println("Cliente não encontrado.");
-			return;
-		}
-		//recebe parametros
-		marca = printScan("Marca: ");
-		modelo = printScan("Modelo: ");
-		do {
-			try {
-				anoFabricacao = Integer.parseInt(printScan("Ano de Fabricação: "));
-				isInt = true;
-				}
-			catch (NumberFormatException e) { isInt = false; }
-		}while(!isInt);
-		placa = printScan("Placa: ");
-		//instancia veiculo
-		veiculo = new Veiculo(marca, modelo, placa, anoFabricacao);
-		//cadastra veiculo
-		if (cliente.cadastrarVeiculo(veiculo))
-			System.out.println("Veículo cadastrado com sucesso!\n");
-		else
-			System.out.println("Erro ao cadastrar veículo\n");
+		if (tipoCliente.equals("PF")) 
+			returnBool = seguradora.cadastrarCliente(Input.instanciaClientePF());
+		else if (tipoCliente.equals("PJ")) 
+			returnBool = seguradora.cadastrarCliente(Input.instanciaClientePJ());
+		if (returnBool)
+			System.out.println("Cliente cadastrado com sucesso!");
+		else System.out.println("Erro ao cadastrar cliente.");
 		return;
 	}
 	
+	private static void opcaoAutorizarCondutor() {
+		Seguro seguro;
+		seguro = Selecao.escolheSeguro(Selecao.escolheSeguradora(listaSeguradoras).getListaSeguros());
+
+		if (seguro.autorizarCondutor(Input.instanciaCondutor()))
+			System.out.println("Condutor autorizado com sucesso!");
+		else System.out.println("Erro ao autorizar condutor.");
+		return;
+	}
+	
+	private static void opcaoCadastrarVeiculo() {
+		String tipoCliente;
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		boolean returnBool = false;
+		
+		do {tipoCliente = Input.printScan("Insira o tipo de cliente(PF ou PJ)");}
+		while (!(tipoCliente.equals("PF") || tipoCliente.equals("PJ")));
+		
+		if (tipoCliente.equals("PF")){
+			ClientePF cliente = Selecao.escolheClientePF(seguradora.getListaClientesPF());
+			returnBool = cliente.cadastrarVeiculo(Input.instaciaVeiculo());
+		}
+		else if (tipoCliente.equals("PJ")){
+			ClientePJ cliente = Selecao.escolheClientePJ(seguradora.getListaClientesPJ());
+			Frota frota = Selecao.escolheFrota(cliente.getListaFrotas());
+			returnBool = frota.adicionarVeiculo(Input.instaciaVeiculo());
+		}
+		
+		if (returnBool)
+			System.out.println("Veículo cadastrado com sucesso!");
+		else System.out.println("Erro ao cadastrar veículo.");
+		return;
+	}
+	
+	private static void opcaoIniciarFrota() {
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		ClientePJ cliente = Selecao.escolheClientePJ(seguradora.getListaClientesPJ());
+		
+		String code = Input.printScan("Code da Frota:");
+		if (cliente.cadastrarFrota(new Frota(code, new ArrayList<Veiculo>())))
+			System.out.println("Frota inicializada com sucesso!");
+		else System.out.println("Erro ao iniciar frota.");
+	}
+	
 	private static void opcaoCadastrarSeguradora() {
-		String nome, telefone, email, endereco;
-		Seguradora seguradora;
-		//recebe parametros
-		nome = printScan("Nome da Seguradora: ");
-		telefone = printScan("Telefone: ");
-		email = printScan("Email: ");
-		endereco = printScan("Endereço: ");
-		//instancia seguradora
-		seguradora = new Seguradora(nome, telefone, email, endereco, new ArrayList<Sinistro>(), new LinkedList<Cliente>());
-		//adiciona na lista de seguradoras
-		if (listaSeguradoras.add(seguradora))
+		if (listaSeguradoras.add(Input.instanciaSeguradora()))
 			System.out.println("Seguradora cadastrada com sucesso!\n");
 		else
 			System.out.println("Erro ao cadastrar seguradora\n");
 		return;
+	}
+	
+	private static void opcaoCadastrarSeguro() {
+		boolean returnBool = false;
+		
+		System.out.println("Data de Início:");
+		Date dataInicio = Input.recebeDataValida();
+		
+		System.out.println("Data de Término:");
+		Date dataFim = Input.recebeDataValida();
+		
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		
+		String tipoCliente;
+		do {tipoCliente = Input.printScan("Insira o tipo de cliente(PF ou PJ)");}
+		while (!(tipoCliente.equals("PF") || tipoCliente.equals("PJ")));
+		
+		if (tipoCliente.equals("PF")) {
+			ClientePF cliente = Selecao.escolheClientePF(seguradora.getListaClientesPF());
+			Veiculo veiculo = Selecao.escolheVeiculo(cliente.getListaVeiculos());
+			returnBool = seguradora.gerarSeguro(dataInicio, dataFim, new ArrayList<Condutor>(), cliente, veiculo);
+		}
+		if (tipoCliente.equals("PJ")) {
+			ClientePJ cliente = Selecao.escolheClientePJ(seguradora.getListaClientesPJ());
+			Frota frota = Selecao.escolheFrota(cliente.getListaFrotas());
+			returnBool = seguradora.gerarSeguro(dataInicio, dataFim, new ArrayList<Condutor>(), cliente, frota);
+		}
+		
+		if (returnBool)
+			System.out.println("Seguro cadastrado com sucesso!");
+		else System.out.println("Erro ao cadastrar seguro");
 	}
 	
 	private static void opcaoListarClientes() {
@@ -432,11 +308,6 @@ public class Main {
 	
 	
 	//metodos auxiliares
-	/*Printa mensagem, le uma string e a retorna*/
-	private static String printScan(String mensagem) {
-		System.out.println(mensagem);
-		return scanner.nextLine();
-	}
 	
 	private static Seguradora encontraSeguradora(String nome) {
 		for (Seguradora i:listaSeguradoras) {
@@ -474,7 +345,7 @@ public class Main {
 				opcaoGerarSinistro();
 				break;
 			case TRANSFERIR_SEGURO:
-				opcaoTransferirSeguro();
+				//opcaoTransferirSeguro();
 				break;
 			case CALCULAR_RECEITA:
 				opcaoCalcularReceita();
@@ -573,8 +444,7 @@ public class Main {
 		listaSeguradoras.add(seguradoraTeste);
 		ClientePF c1;
 		ClientePJ c2;
-		Date dataNascimento = null, dataLicenca = null, dataFundacao = null, dataInicio = null, dataFim = null, dataSinistro = null7
-				;
+		Date dataNascimento = null, dataLicenca = null, dataFundacao = null, dataInicio = null, dataFim = null, dataSinistro = null;
 		
 		try {
 			dataLicenca = new SimpleDateFormat("dd/MM/yyyy").parse("20/10/1996");

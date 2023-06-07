@@ -24,6 +24,10 @@ public class SeguroPJ extends Seguro {
 	public Frota getFrota() {
 		return frota;
 	}
+	
+	public String getTipo() {
+		return "PJ";
+	}
 
 	public int getIdadeCliente() {
 		Date dataAtual = new java.util.Date();                                                                                      

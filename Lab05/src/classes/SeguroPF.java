@@ -23,6 +23,10 @@ public class SeguroPF extends Seguro {
 	public Veiculo getVeiculo() {
 		return veiculo;
 	}
+	
+	public String getTipo() {
+		return "PF";
+	}
 
 	public int getIdadeCliente() {
 		Date dataAtual = new java.util.Date();                                                                                      
