@@ -63,6 +63,7 @@ public abstract class Seguro {
 	}
 
 	public double getValorMensal() {
+		valorMensal = calcularValor();
 		return valorMensal;
 	}
 
@@ -101,6 +102,16 @@ public abstract class Seguro {
 		return returnValue;
 	}
 	
+	public boolean removerSinistro(Sinistro sinistro) {
+		boolean returnValue = false;
+		if (sinistro.getCondutor().removerSinistro(sinistro))
+			returnValue = true;
+		if (!listaSinistros.remove(sinistro))
+			returnValue = false;
+		return returnValue;
+	}
+	
+	
 	public abstract Cliente getCliente();
 	
 	public abstract double calcularValor();
@@ -108,8 +119,8 @@ public abstract class Seguro {
 	public String toString() {
 		String returnValue = "";
 		returnValue += ("Id do Seguro: " + id + "\n" +
-				"Seguradora: " + seguradora + "("+ seguradora.getCnpj() +")\n" +
-				"Valor: " + valorMensal + "\n" +
+				"Seguradora: " + seguradora.getNome() + "("+ seguradora.getCnpj() +")\n" +
+				"Valor: " + getValorMensal() + "\n" +
 				"Data de Início: " + dataInicio + "\n" +
 				"Data de Término: " + dataFim + "\n");
 		//gera lista compacta de condutores

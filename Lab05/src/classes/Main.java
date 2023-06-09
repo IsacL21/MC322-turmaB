@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 public class Main {
@@ -40,6 +39,7 @@ public class Main {
 		return;
 	}
 	
+	//Opcoes de cadastros
 	private static void opcaoCadastrarCliente() {
 		String tipoCliente;
 		Seguradora seguradora;
@@ -145,176 +145,170 @@ public class Main {
 		else System.out.println("Erro ao cadastrar seguro");
 	}
 	
+	//opcoes de listagem
 	private static void opcaoListarClientes() {
-		String nomeSeguradora,tipoCliente;
-		Seguradora seguradora;
-		
-		//recebe e procura seguradora
-		nomeSeguradora = printScan("Nome da seguradora: ");
-		if ((seguradora = encontraSeguradora(nomeSeguradora)) == null) {
-			System.out.println("Seguradora não encontrada");
-			return;
-		}
+		String tipoCliente;
+
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
 		//recebe tipo do cliente
-		do {tipoCliente = printScan("Tipo do Cliente(PF,PJ ou vazio para ambos)");}
+		do {tipoCliente = Input.printScan("Tipo do Cliente(PF,PJ ou vazio para ambos)");}
 		while (!(tipoCliente.equals("PF") || tipoCliente.equals("PJ")|| tipoCliente.equals("")));
 		
 		seguradora.listarClientes(tipoCliente);
 		return;
-		
 	}
 	
-	private static void opcaoListarSinistrosSeguradora() {
-		String nomeSeguradora;
-		Seguradora seguradora;
+	private static void opcaoListarSegurosCliente() {
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		Cliente cliente = Selecao.escolheCliente(seguradora.getListaClientes());
 		
-		//recebe e procura seguradora
-		nomeSeguradora = printScan("Nome da seguradora: ");
-		if ((seguradora = encontraSeguradora(nomeSeguradora)) == null) {
-			System.out.println("Seguradora não encontrada");
-			return;
+		ArrayList<Seguro> listaSeguros = seguradora.getSegurosPorCliente(cliente);
+		if (listaSeguros.size() > 0) {
+			System.out.println("Seguros:");
+			for (Seguro i:listaSeguros)
+				System.out.println(i.toString().indent(1));
 		}
-		
-		seguradora.listarSinistros();
-		return;
+		else System.out.println("O cliente não possui nenhum seguro.");
 	}
 	
-	private static void opcaoListarSinistrosCliente() {
-		String idCliente;
-		Cliente cliente = null;
-		int i = -1;
-		//receber e procura cliente
-		idCliente = printScan("Id do Cliente: ");
-		while (cliente == null && i < listaSeguradoras.size()-1) {
-			i++;
-			cliente = listaSeguradoras.get(i).encontraCliente(idCliente);
+	private static void opcaoListarCondutoresSeguro() {
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		Seguro seguro = Selecao.escolheSeguro(seguradora.getListaSeguros());
+		
+		if (seguro.getListaCondutores().size() > 0) {
+			System.out.println("Condutores:");
+			for (Condutor i:seguro.getListaCondutores())
+				System.out.println(i.toString().indent(1));
 		}
-		if (cliente == null) {
-			System.out.println("Cliente não encontrado.");
-			return;
+		else System.out.println("O seguro não possui nenhum condutor.");
+	}
+	
+	private static void opcaoListarSinistrosSeguro() {
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		Seguro seguro = Selecao.escolheSeguro(seguradora.getListaSeguros());
+		
+		if (seguro.getListaSinistros().size() > 0) {
+			System.out.println("Sinistros:");
+			for (Sinistro i:seguro.getListaSinistros())
+				System.out.println(i.toString().indent(1));
 		}
-		//cliente foi encontrado
-		listaSeguradoras.get(i).visualizarSinistro(cliente);
-		return;
+		else System.out.println("O seguro não possui nenhum sinistro.");
+	}
+	
+	private static void opcaoListarSinistrosCondutor() {
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		Seguro seguro = Selecao.escolheSeguro(seguradora.getListaSeguros());
+		Condutor condutor = Selecao.escolheCondutor(seguro.getListaCondutores());
+		
+		if (condutor.getListaSinistros().size() > 0) {
+			System.out.println("Sinistros:");
+			for (Sinistro i:condutor.getListaSinistros())
+				System.out.println(i.toString().indent(1));
+		}
+		else System.out.println("O condutor não possui nenhum sinistro.");
 	}
 	
 	private static void opcaoListarVeiculosCliente() {
-		String idCliente;
-		Cliente cliente = null;
-		int i = -1;
-		//receber e procura cliente
-		idCliente = printScan("Id do Cliente: ");
-		while (cliente == null && i < listaSeguradoras.size()-1) {
-			i++;
-			cliente = listaSeguradoras.get(i).encontraCliente(idCliente);
-		}
-		if (cliente == null) {
-			System.out.println("Cliente não encontrado.");
-			return;
-		}
-		//imprime a lista
-		System.out.println(cliente.stringListaVeiculos());
-		return;
-	}
-	
-	private static void opcaoListarVeiculosSeguradora() {
-		String nomeSeguradora;
-		Seguradora seguradora;
+		String tipoCliente;
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
 		
-		//recebe e procura seguradora
-		nomeSeguradora = printScan("Nome da seguradora: ");
-		if ((seguradora = encontraSeguradora(nomeSeguradora)) == null) {
-			System.out.println("Seguradora não encontrada");
-			return;
+		do {tipoCliente = Input.printScan("Insira o tipo de cliente(PF ou PJ)");}
+		while (!(tipoCliente.equals("PF") || tipoCliente.equals("PJ")));
+		
+		if (tipoCliente.equals("PF")){
+			ClientePF cliente = Selecao.escolheClientePF(seguradora.getListaClientesPF());
+			if (cliente.getListaVeiculos().size() > 0) {
+				System.out.println("Lista de Veículos:");
+				for (Veiculo i:cliente.getListaVeiculos())
+					System.out.println(i.toString().indent(1));
+			}
+			else System.out.println("O cliente não possui veículos.");
 		}
-		System.out.println("Veículos:\n");
-		for (Cliente i : seguradora.getListaClientes()) {
-			System.out.println(i.stringListaVeiculos());
+		else if (tipoCliente.equals("PJ")){
+			ClientePJ cliente = Selecao.escolheClientePJ(seguradora.getListaClientesPJ());
+			Frota frota = Selecao.escolheFrota(cliente.getListaFrotas());
+			System.out.println(frota);
 		}
 		return;
 	}
 	
+	//Opcoes de remocao
 	private static void opcaoExcluirCliente() {
-		String idCliente;
-		Cliente cliente = null;
-		int i = -1;
-		//receber e procura cliente
-		idCliente = printScan("Id do Cliente: ");
-		while (cliente == null && i < listaSeguradoras.size()-1) {
-			i++;
-			cliente = listaSeguradoras.get(i).encontraCliente(idCliente);
-		}
-		if (cliente == null) {
-			System.out.println("Cliente não encontrado.");
-			return;
-		}
-		if (listaSeguradoras.get(i).removerCliente(cliente))
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		if (seguradora.removerCliente(Selecao.escolheCliente(seguradora.getListaClientes())))
 			System.out.println("Cliente removido com sucesso!");
-		else 
-			System.out.println("Erro ao remover cliente");
+		else System.out.println("Erro ao remover cliente.");
+		return;
+	}
+	
+	private static void opcaoDesautorizarCondutor() {
+		Seguro seguro = Selecao.escolheSeguro(Selecao.escolheSeguradora(listaSeguradoras).getListaSeguros());
+		if (seguro.desautorizarCondutor(Selecao.escolheCondutor(seguro.getListaCondutores())))
+			System.out.println("Condutor desautorizado com sucesso!");
+		else System.out.println("Erro ao desautorizar condutor.");
 		return;
 	}
 	
 	private static void opcaoExcluirVeiculo() {
-		String placa;
-		Veiculo veiculo = null;
-		Cliente cliente = null;
-		int i = -1;
-		//receber e procura cliente
-		placa = printScan("Placa do Veículo: ");
-		while (veiculo == null && i < listaSeguradoras.size()-1) {
-			i++;
-			veiculo = listaSeguradoras.get(i).encontraVeiculo(placa);
+		String tipoCliente;
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		boolean returnBool = false;
+		
+		do {tipoCliente = Input.printScan("Insira o tipo de cliente(PF ou PJ)");}
+		while (!(tipoCliente.equals("PF") || tipoCliente.equals("PJ")));
+		
+		if (tipoCliente.equals("PF")){
+			ClientePF cliente = Selecao.escolheClientePF(seguradora.getListaClientesPF());
+			Veiculo veiculo = Selecao.escolheVeiculo(cliente.getListaVeiculos());
+			Seguro seguro = seguradora.getSeguroPorVeiculo(veiculo);
+			//remove seguro referente ao veiculo
+			if (seguro != null)
+				seguradora.cancelarSeguro(seguro);
+			returnBool = cliente.removerVeiculo(veiculo);
 		}
-		if (veiculo == null) {
-			System.out.println("Veículo não encontrado.");
-			return;
+		else if (tipoCliente.equals("PJ")){
+			ClientePJ cliente = Selecao.escolheClientePJ(seguradora.getListaClientesPJ());
+			Frota frota = Selecao.escolheFrota(cliente.getListaFrotas());
+			returnBool = frota.removerVeiculo(Selecao.escolheVeiculo(frota.getListaVeiculos()));
 		}
-		cliente = listaSeguradoras.get(i).encontraDono(veiculo);
-		if (cliente.removerVeiculo(veiculo))
+		
+		if (returnBool)
 			System.out.println("Veículo removido com sucesso!");
-		else
-			System.out.println("Erro ao remover veículo.");
+		else System.out.println("Erro ao remover veículo.");
 		return;
 	}
 	
-	private static void opcaoExcluirSinistro() {
-		boolean isInt;
-		int idSinistro=-1,i=-1;
-		Sinistro sinistro = null;
-		do {
-			try {
-				idSinistro = Integer.parseInt(printScan("Id do Sinistro: "));
-				isInt = true;
-				}
-			catch (NumberFormatException e) { isInt = false; }
-		}while(!isInt);
-		while (sinistro == null && i < listaSeguradoras.size()-1) {
-			i++;
-			int j =-1;
-			while (sinistro == null && j < listaSeguradoras.get(i).getListaSinistros().size()-1) {
-				j++;
-				if ((listaSeguradoras.get(i).getListaSinistros().get(j).getID()) == idSinistro)
-					sinistro = listaSeguradoras.get(i).getListaSinistros().get(j);
-			}
-		}
-		if (listaSeguradoras.get(i).getListaSinistros().remove(sinistro))
-			System.out.println("Sinistro removido com sucesso!");
-		else
-			System.out.println("Erro ao remover SInistro.");
-		return;
+	private static void opcaoExcluirFrota() {
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		ClientePJ cliente = Selecao.escolheClientePJ(seguradora.getListaClientesPJ());
+		Frota frota = Selecao.escolheFrota(cliente.getListaFrotas());
+		Seguro seguro;
+		//remove seguro referente a frota removida
+		if ((seguro = seguradora.getSeguroPorFrota(frota)) != null)
+			seguradora.cancelarSeguro(seguro);
+		if (cliente.removerFrota(frota))
+			System.out.println("Frota removida com sucesso!");
+		else System.out.println("Erro ao remover frota.");
+	}
+	
+	private static void opcaoCancelarSeguro() {
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		Seguro seguro = Selecao.escolheSeguro(seguradora.getListaSeguros());
+		
+		if (seguradora.cancelarSeguro(seguro))
+			System.out.println("Seguro cancelado com sucesso!");
+		else System.out.println("Erro ao cancelar seguro.");
 		
 	}
 	
-	
-	//metodos auxiliares
-	
-	private static Seguradora encontraSeguradora(String nome) {
-		for (Seguradora i:listaSeguradoras) {
-			if (i.getNome().toLowerCase().equals(nome.toLowerCase()))
-				return i;
-		}
-		return null;
+	private static void opcaoExcluirSinistro() {
+		Seguradora seguradora = Selecao.escolheSeguradora(listaSeguradoras);
+		Seguro seguro = Selecao.escolheSeguro(seguradora.getListaSeguros());
+		Sinistro sinistro = Selecao.escolheSinistro(seguro.getListaSinistros());
+		
+		if (seguro.removerSinistro(sinistro))
+			System.out.println("Sinistro removido com sucesso!");
+		else System.out.println("Erro ao remover sinistro.");
 	}
 	
 	//metodos do menu
@@ -344,85 +338,87 @@ public class Main {
 			case GERAR_SINISTRO:
 				opcaoGerarSinistro();
 				break;
-			case TRANSFERIR_SEGURO:
-				//opcaoTransferirSeguro();
-				break;
 			case CALCULAR_RECEITA:
 				opcaoCalcularReceita();
 				break;
-			//case SAIR:
+			case SAIR:
+				break;
 		}
 	}
 	
 	private static MenuOperacoes lerOpcaoMenuExterno() {
-		int opUsuario = -1;
-		boolean isInt;
-		MenuOperacoes opUsuarioConst;
-		do {
-			System.out.println("Digite uma opcao: ");
-			try {
-				opUsuario = Integer.parseInt(scanner.nextLine()) - 1;
-				isInt = true;
-				}
-			catch (NumberFormatException e) { isInt = false; }
-		}while(!(isInt) && (opUsuario < 0 || opUsuario > MenuOperacoes.values().length - 1));
-		opUsuarioConst = MenuOperacoes.values()[opUsuario];
-		return opUsuarioConst;
+		System.out.println("Digite uma opcao: ");
+		return MenuOperacoes.values()[Input.getIntInputBetween(0, MenuOperacoes.values().length)];
 	}
 	
 	private static SubmenuOperacoes lerOpcaoSubmenu(MenuOperacoes op) {
-		int opUsuario = -1;
-		boolean isInt;
-		SubmenuOperacoes opUsuarioConst;
-		do {
 			System.out.println("Digite uma opcao: ");
-			try {
-				opUsuario = Integer.parseInt(scanner.nextLine()) - 1;
-				isInt = true;
-				}
-			catch (NumberFormatException e) { isInt = false; }
-		}while(!(isInt) && (opUsuario < 0 || opUsuario > MenuOperacoes.values().length - 1));
-		opUsuarioConst = op.getSubmenu()[opUsuario];
-		return opUsuarioConst;
+		return op.getSubmenu()[Input.getIntInputBetween(0, op.getSubmenu().length)];
 	}
 	
 	public static void executarOpcaoSubMenu(SubmenuOperacoes opSubmenu) {
-		switch(opSubmenu) {
-		case CADASTRAR_CLIENTE:
-			opcaoCadastrarCliente();
-			break;
-		case CADASTRAR_VEICULO:
-			opcaoCadastrarVeiculo();
-			break;
-		case CADASTRAR_SEGURADORA:
-			opcaoCadastrarSeguradora();
-			break;
-		case LISTAR_CLIENTES:
-			opcaoListarClientes();
-			break;
-		case LISTAR_SINISTROS_SEGURADORA:
-			opcaoListarSinistrosSeguradora();
-			break;
-		case LISTAR_SINISTROS_CLIENTE:
-			opcaoListarSinistrosCliente();
-			break;
-		case LISTAR_VEICULOS_SEGURADORA:
-			opcaoListarVeiculosSeguradora();
-			break;
-		case LISTAR_VEICULOS_CLIENTE:
-			opcaoListarVeiculosCliente();
-			break;
-		case EXCLUIR_CLIENTE:
-			opcaoExcluirCliente();
-			break;
-		case EXCLUIR_VEICULO:
-			opcaoExcluirVeiculo();
-			break;
-		case EXCLUIR_SINISTRO:
-			opcaoExcluirSinistro();
-			break;
-		//case VOLTAR:
-			//break;
+		try {
+			switch(opSubmenu) {
+			case CADASTRAR_CLIENTE:
+				opcaoCadastrarCliente();
+				break;
+			case AUTORIZAR_CONDUTOR:
+				opcaoAutorizarCondutor();
+				break;
+			case CADASTRAR_VEICULO:
+				opcaoCadastrarVeiculo();
+				break;
+			case INICIAR_FROTA:
+				opcaoIniciarFrota();
+				break;
+			case CADASTRAR_SEGURO:
+				opcaoCadastrarSeguro();
+				break;
+			case CADASTRAR_SEGURADORA:
+				opcaoCadastrarSeguradora();
+				break;
+			case LISTAR_CLIENTES:
+				opcaoListarClientes();
+				break;
+			case LISTAR_SEGUROS_CLIENTE:
+				opcaoListarSegurosCliente();
+				break;
+			case LISTAR_CONDUTORES_SEGURO:
+				opcaoListarCondutoresSeguro();
+				break;
+			case LISTAR_SINISTROS_SEGURO:
+				opcaoListarSinistrosSeguro();
+				break;
+			case LISTAR_SINISTROS_CONDUTOR:
+				opcaoListarSinistrosCondutor();
+				break;
+			case LISTAR_VEICULOS_CLIENTE:
+				opcaoListarVeiculosCliente();
+				break;
+			case EXCLUIR_CLIENTE:
+				opcaoExcluirCliente();
+				break;
+			case DESAUTORIZAR_CONDUTOR:
+				opcaoDesautorizarCondutor();
+				break;
+			case EXCLUIR_VEICULO:
+				opcaoExcluirVeiculo();
+				break;
+			case EXCLUIR_FROTA:
+				opcaoExcluirFrota();
+				break;
+			case CANCELAR_SEGURO:
+				opcaoCancelarSeguro();
+				break;
+			case EXCLUIR_SINISTRO:
+				opcaoExcluirSinistro();
+				break;
+			case VOLTAR:
+				break;
+			}
+		}
+		catch (IllegalStateException e) {
+			System.out.println("Erro ao tentar escolher elemento de uma lista vazia!");
 		}
 	}
 	
@@ -444,10 +440,9 @@ public class Main {
 		listaSeguradoras.add(seguradoraTeste);
 		ClientePF c1;
 		ClientePJ c2;
-		Date dataNascimento = null, dataLicenca = null, dataFundacao = null, dataInicio = null, dataFim = null, dataSinistro = null;
+		Date dataNascimento = null, dataFundacao = null, dataInicio = null, dataFim = null, dataSinistro = null;
 		
 		try {
-			dataLicenca = new SimpleDateFormat("dd/MM/yyyy").parse("20/10/1996");
 			dataNascimento = new SimpleDateFormat("dd/MM/yyyy").parse("24/01/1979");
 		}catch (ParseException e) {}
 		c1 = new ClientePF("Dean Winchester", "305-296-5314", "rooster89@gmail.com", "Cross Junction, Virginia, 22625",

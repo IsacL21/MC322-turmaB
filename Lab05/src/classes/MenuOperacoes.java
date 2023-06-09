@@ -12,19 +12,22 @@ public enum MenuOperacoes {
 	}),
 	LISTAR("Listar", new SubmenuOperacoes[] {
 			SubmenuOperacoes.LISTAR_CLIENTES,
-			SubmenuOperacoes.LISTAR_SINISTROS_SEGURADORA,
-			SubmenuOperacoes.LISTAR_SINISTROS_CLIENTE,
-			SubmenuOperacoes.LISTAR_VEICULOS_SEGURADORA,
+			SubmenuOperacoes.LISTAR_SEGUROS_CLIENTE,
+			SubmenuOperacoes.LISTAR_CONDUTORES_SEGURO,
+			SubmenuOperacoes.LISTAR_SINISTROS_SEGURO,
+			SubmenuOperacoes.LISTAR_SINISTROS_CONDUTOR,
 			SubmenuOperacoes.LISTAR_VEICULOS_CLIENTE,
 			SubmenuOperacoes.VOLTAR
 	}),
 	EXCLUIR("Excluir", new SubmenuOperacoes[] {
 			SubmenuOperacoes.EXCLUIR_CLIENTE,
+			SubmenuOperacoes.DESAUTORIZAR_CONDUTOR,
 			SubmenuOperacoes.EXCLUIR_VEICULO,
+			SubmenuOperacoes.EXCLUIR_FROTA,
+			SubmenuOperacoes.CANCELAR_SEGURO,
 			SubmenuOperacoes.EXCLUIR_SINISTRO,
 			SubmenuOperacoes.VOLTAR}),
 	GERAR_SINISTRO("Gerar Sinistro", new SubmenuOperacoes[] {SubmenuOperacoes.VOLTAR}),
-	TRANSFERIR_SEGURO("Transferir Seguro", new SubmenuOperacoes[] {SubmenuOperacoes.VOLTAR}),
 	CALCULAR_RECEITA("Calcular Receita", new SubmenuOperacoes[] {SubmenuOperacoes.VOLTAR}),
 	SAIR("Sair", new SubmenuOperacoes[] {});
 	

@@ -64,8 +64,8 @@ public class Sinistro {
 				"\tData: " + getData() + "\n" +
 				"\tEndereco: " + getEndereco() + "\n" +
 				"\tCondutor: " + getCondutor().getNome() + " (" + getCondutor().getCpf() + ")\n" +
-				"\tCliente: " + getSeguro().getCliente() + "\n" +
-				"\tSeguradora: " + getSeguro().getSeguradora() + "\n"
+				"\tCliente: " + getSeguro().getCliente().getNome() + "(" + getSeguro().getCliente().getId() +")\n" +
+				"\tSeguradora: " + getSeguro().getSeguradora().getNome() + "(" + getSeguro().getSeguradora().getCnpj() +")\n"
 				);
 	}
 }

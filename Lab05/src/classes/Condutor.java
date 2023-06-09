@@ -78,6 +78,10 @@ public class Condutor {
 		return listaSinistros.add(sinistro);
 	}
 	
+	public boolean removerSinistro(Sinistro sinistro) {
+		return listaSinistros.remove(sinistro);
+	}
+	
 	public String toString() {
 		return(
 				"Nome: " + nome + "\n" +

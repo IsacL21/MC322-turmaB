@@ -152,6 +152,20 @@ public class Seguradora {
 				returnList.add(i);
 		return returnList;
 	}
+	
+	public SeguroPF getSeguroPorVeiculo(Veiculo veiculo) {
+		for (SeguroPF seg: getListaSegurosPF())
+			if (seg.getVeiculo().equals(veiculo))
+				return seg;
+		return null;
+	}
+	
+	public SeguroPJ getSeguroPorFrota(Frota frota) {
+		for (SeguroPJ seg: getListaSegurosPJ())
+			if (seg.getFrota().equals(frota))
+				return seg;
+		return null;
+	}
 
 	public double calculaReceita() {
 		double receita = 0;
